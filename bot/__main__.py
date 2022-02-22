@@ -9,6 +9,10 @@ from sys import executable
 from telegram import ParseMode, InlineKeyboardMarkup
 from telegram.ext import CommandHandler
 
+import pytz
+from datetime import datetime
+from time import time
+
 from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, PORT, alive, web, OWNER_ID, AUTHORIZED_CHATS, LOGGER, Interval, rss_session, a2c
 from .helper.ext_utils.fs_utils import start_cleanup, clean_all, exit_clean_up
 from .helper.telegram_helper.bot_commands import BotCommands
@@ -40,27 +44,28 @@ def stats(update, context):
     mem_t = get_readable_file_size(memory.total)
     mem_a = get_readable_file_size(memory.available)
     mem_u = get_readable_file_size(memory.used)
-    stats = f'<b>Bot Uptime:</b> {currentTime}\n\n'\
-            f'<b>Total Disk Space:</b> {total}\n'\
-            f'<b>Used:</b> {used} | <b>Free:</b> {free}\n\n'\
-            f'<b>Upload:</b> {sent}\n'\
-            f'<b>Download:</b> {recv}\n\n'\
+    stats = f'<b>••━━Rakesh Mirror Bot━━••</b>\n\n'\
+            f'<b>Bᴏᴛ Uᴘᴛɪᴍᴇ:</b> {currentTime}\n\n'\
+            f'<b>Tᴏᴛᴀʟ Dɪsᴋ Sᴘᴀᴄᴇ:</b> {total}\n'\
+            f'<b>Usᴇᴅ:</b> {used} | <b>Free:</b> {free}\n\n'\
+            f'<b>Uᴘʟᴏᴀᴅ:</b> {sent}\n'\
+            f'<b>Dᴏᴡɴʟᴏᴀᴅ:</b> {recv}\n\n'\
             f'<b>CPU:</b> {cpuUsage}%\n'\
             f'<b>RAM:</b> {mem_p}%\n'\
             f'<b>DISK:</b> {disk}%\n\n'\
-            f'<b>Physical Cores:</b> {p_core}\n'\
-            f'<b>Total Cores:</b> {t_core}\n\n'\
+            f'<b>Pʜʏsɪᴄᴀʟ Cᴏʀᴇs:</b> {p_core}\n'\
+            f'<b>Tᴏᴛᴀʟ Cᴏʀᴇs:</b> {t_core}\n\n'\
             f'<b>SWAP:</b> {swap_t} | <b>Used:</b> {swap_p}%\n'\
-            f'<b>Memory Total:</b> {mem_t}\n'\
-            f'<b>Memory Free:</b> {mem_a}\n'\
-            f'<b>Memory Used:</b> {mem_u}\n'
+            f'<b>Mᴇᴍᴏʀʏ Tᴏᴛᴀʟ:</b> {mem_t}\n'\
+            f'<b>Memory Fʀᴇᴇ:</b> {mem_a}\n'\
+            f'<b>Memory Usᴇᴅ:</b> {mem_u}\n'
     sendMessage(stats, context.bot, update)
 
 
 def start(update, context):
     buttons = ButtonMaker()
-    buttons.buildbutton("Repo", "https://www.github.com/anasty17/mirror-leech-telegram-bot")
-    buttons.buildbutton("Report Group", "https://t.me/+PRRzqHd31XY3ZWZk")
+    buttons.buildbutton("Owner", "https://t.me/RakeshkrGorai")
+    buttons.buildbutton("Github", "https://www.github.com/RakeshkrGorai")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
         start_string = f'''
@@ -69,7 +74,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
         sendMarkup(start_string, context.bot, update, reply_markup)
     else:
-        sendMarkup('Not Authorized user, deploy your own mirror-leech bot', context.bot, update, reply_markup)
+        sendMarkup("Unauthorized User! \nYou can't use this bot", context.bot, update)
 
 def restart(update, context):
     restart_message = sendMessage("Restarting...", context.bot, update)
@@ -172,7 +177,7 @@ help_string_telegraph = f'''<br>
 '''
 
 help = telegraph.create_page(
-        title='Mirror-Leech-Bot Help',
+        title='RK-Mirror Help',
         content=help_string_telegraph,
     )["path"]
 
@@ -243,15 +248,22 @@ botcmds = [
 def main():
     # bot.set_my_commands(botcmds)
     start_cleanup()
+    TIMEZONE= 'Asia/Kolkata'
+    kie = datetime.now(pytz.timezone(f'{TIMEZONE}'))
+    jam = kie.strftime('\n📅 DATE: %d/%m/%Y\n⏲️ TIME: %I:%M%P')
+    # bot.set_my_commands(botcmds)
+    fs_utils.start_cleanup()
+    if IS_VPS:
+        asyncio.new_event_loop().run_until_complete(start_server_async(PORT))
     # Check if the bot is restarting
-    if ospath.isfile(".restartmsg"):
+    if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
-        bot.edit_message_text("Restarted successfully!", chat_id, msg_id)
-        osremove(".restartmsg")
+        bot.edit_message_text("𝚁𝚎𝚜𝚝𝚊𝚛𝚝𝚎𝚍 𝚜𝚞𝚌𝚌𝚎𝚜𝚜𝚏𝚞𝚕𝚕𝚢!", chat_id, msg_id)
+        os.remove(".restartmsg")
     elif OWNER_ID:
         try:
-            text = "<b>Bot Restarted!</b>"
+            text = f" ♻️<b> BOT RESTARTED ♻️\n{jam}\n🗺️ TIME ZONE: {TIMEZONE}\n\nALL TASKS KILLED. RESTART YOUR DOWNLOADS\n\n#Restarted</b>"
             bot.sendMessage(chat_id=OWNER_ID, text=text, parse_mode=ParseMode.HTML)
             if AUTHORIZED_CHATS:
                 for i in AUTHORIZED_CHATS:
