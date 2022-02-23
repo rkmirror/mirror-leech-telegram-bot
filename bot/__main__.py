@@ -253,11 +253,11 @@ def main():
     jam = kie.strftime('\n📅 DATE: %d/%m/%Y\n⏲️ TIME: %I:%M%P')
     # bot.set_my_commands(botcmds)
     # Check if the bot is restarting
-    if os.path.isfile(".restartmsg"):
+    if ospath.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
-        bot.edit_message_text("𝚁𝚎𝚜𝚝𝚊𝚛𝚝𝚎𝚍 𝚜𝚞𝚌𝚌𝚎𝚜𝚜𝚏𝚞𝚕𝚕𝚢!", chat_id, msg_id)
-        os.remove(".restartmsg")
+        bot.edit_message_text("Restarted successfully!", chat_id, msg_id)
+        osremove(".restartmsg")
     elif OWNER_ID:
         try:
             text = f" ♻️<b> BOT RESTARTED ♻️\n{jam}\n🗺️ TIME ZONE: {TIMEZONE}\n\nALL TASKS KILLED. RESTART YOUR DOWNLOADS\n\n#Restarted</b>"
