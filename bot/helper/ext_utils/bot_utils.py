@@ -106,8 +106,8 @@ def get_progress_bar_string(status):
     p = 0 if total == 0 else round(completed * 100 / total)
     p = min(max(p, 0), 100)
     cFull = p // 8
-    p_str = '■' * cFull
-    p_str += '□' * (12 - cFull)
+    p_str = '⬢' * cFull
+    p_str += '⬡' * (12 - cFull)
     p_str = f"[{p_str}]"
     return p_str
 
@@ -153,8 +153,8 @@ def get_readable_message():
                         dlspeed_bytes += float(spd.split('M')[0]) * 1048576
                 msg += f"\n<b>Speed:</b> {download.speed()} | <b>ETA:</b> {download.eta()}"
                 try:
-                    msg += f"\n<b>Seeders:</b> {download.aria_download().num_seeders}" \
-                           f" | <b>Peers:</b> {download.aria_download().connections}"
+                    msg += f"\n<b>🌱 Seeders:</b> {download.aria_download().num_seeders}" \
+                           f" | <b>📶 Peers:</b> {download.aria_download().connections}"
                 except:
                     pass
                 try:
