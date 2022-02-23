@@ -252,8 +252,6 @@ def main():
     kie = datetime.now(pytz.timezone(f'{TIMEZONE}'))
     jam = kie.strftime('\n📅 DATE: %d/%m/%Y\n⏲️ TIME: %I:%M%P')
     # bot.set_my_commands(botcmds)
-    if IS_VPS:
-        asyncio.new_event_loop().run_until_complete(start_server_async(PORT))
     # Check if the bot is restarting
     if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
